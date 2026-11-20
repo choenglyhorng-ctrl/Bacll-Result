@@ -1,0 +1,138 @@
+
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Course</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #47366f, #527f8e, #343d41);
+            min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        .edit-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+            padding: 2.5rem;
+            border: none;
+        }
+        .form-label {
+            font-size: 0.8rem;
+            letter-spacing: 0.6px;
+            color: #4a5568;
+        }
+        .form-control, .input-group-text {
+            border-color: #e2e8f0;
+            padding: 0.65rem 0.9rem;
+            border-radius: 8px;
+            background-color: #f8fafc;
+        }
+        .form-control:focus {
+            background-color: #ffffff;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+        .input-group .form-control {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+        .btn-save {
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            border: none;
+            transition: all 0.2s ease;
+        }
+        .btn-save:hover {
+            background: linear-gradient(135deg, #0072ff, #0052d4);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 114, 255, 0.3);
+        }
+        .btn-cancel {
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .btn-cancel:hover {
+            background-color: #f1f5f9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-7">
+                <div class="card edit-card">
+                    
+                    <div class="mb-4 pb-3 border-bottom">
+                        <h2 class="fw-bold text-dark m-0 d-flex align-items-center gap-2">
+                            <i class="bi bi-pencil-square text-primary"></i> Edit Course Details
+                        </h2>
+                        <p class="text-muted small m-0 mt-1">Modify the course parameters below. All changes are saved instantly upon submitting.</p>
+                    </div>
+                    
+                    <form method="post" action="/update/{{course.id}}">
+                        
+                        <div class="mb-3">
+                            <label for="title" class="form-label fw-bold text-uppercase">
+                                <i class="bi bi-type text-primary me-1"></i> Course Title
+                            </label>
+                            <input value="{{course.title}}" type="text" name="title" id="title" class="form-control fw-semibold" placeholder="e.g. Introduction to Python" required />
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label fw-bold text-uppercase">
+                                <i class="bi bi-justify-left text-primary me-1"></i> Description
+                            </label>
+                            <textarea name="description" id="description" class="form-control" rows="4" placeholder="Describe what the course covers...">{{course.description}}</textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="price" class="form-label fw-bold text-uppercase">
+                                    <i class="bi bi-currency-dollar text-primary me-1"></i> Price
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted fw-bold">$</span>
+                                    <input value="{{course.price}}" type="number" step="0.01" name="price" id="price" class="form-control fw-bold text-success" placeholder="0.00" required />
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="professor" class="form-label fw-bold text-uppercase">
+                                    <i class="bi bi-person-badge text-primary me-1"></i> Professor
+                                </label>
+                                <input value="{{course.professor}}" type="text" name="professor" id="professor" class="form-control" placeholder="Professor Name" />
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="video_url" class="form-label fw-bold text-uppercase">
+                                <i class="bi bi-link-45deg text-primary me-1"></i> Video URL
+                            </label>
+                            <input value="{{course.video_url}}" type="url" name="video_url" id="video_url" class="form-control" placeholder="https://example.com/video" />
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 border-top pt-3 mt-4">
+                            <a href="/course" class="btn btn-outline-secondary btn-cancel px-4 py-2 fw-semibold">Cancel</a>
+                            <button type="submit" class="btn btn-primary btn-save px-4 py-2 fw-semibold shadow-sm rounded-3">
+                                <i class="bi bi-check-circle-fill me-1"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>  
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    
+</body>
+</html>

@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Management Portfolio</title>
+<meta name="description" content="Project management portfolio — Agile, Waterfall, and hybrid delivery across hardware, software, and network planning projects.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ============ DESIGN TOKENS ============ */
+  :root {
+    --paper: #0B0F17;
+    --paper-card: #111827;
+    --paper-card-hover: #1F2937;
+    --paper-alt: #161F30;
+    --white: #FFFFFF;
+    --ink: #F3F4F6;
+    --ink-soft: #9CA3AF;
+    --ink-faint: #6B7280;
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.16);
+
+    --green: #10B981;
+    --green-soft: rgba(16, 185, 129, 0.12);
+    --blue: #3B82F6;
+    --blue-soft: rgba(59, 130, 246, 0.12);
+    --gold: #F59E0B;
+    --gold-soft: rgba(245, 158, 11, 0.12);
+
+    --display: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    --body: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+
+    --radius: 12px;
+    --maxw: 1200px;
+    --nav-h: 88px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: var(--nav-h); }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--display);
+    color: var(--white);
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 32px; }
+  @media (max-width: 640px) { .wrap { padding: 0 20px; } }
+
+  .mono { font-family: var(--mono); }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 3px;
+  }
+
+  .btn {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 14px;
+    padding: 14px 28px;
+    border-radius: var(--radius);
+    border: 1px solid var(--line-strong);
+    background: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .btn-primary {
+    background: var(--white);
+    color: #000;
+    border-color: var(--white);
+  }
+  .btn-primary:hover {
+    background: var(--green);
+    border-color: var(--green);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
+  }
+  .btn-ghost {
+    color: var(--white);
+    background: rgba(255, 255, 255, 0.03);
+    border-color: var(--line-strong);
+  }
+  .btn-ghost:hover {
+    background: var(--paper-card-hover);
+    border-color: var(--white);
+    transform: translateY(-2px);
+  }
+
+  /* ============ SIGNATURE NAV: PROJECT TIMELINE ============ */
+  .gantt-nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(11, 15, 23, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--line);
+    height: var(--nav-h);
+  }
+  .gantt-inner {
+    max-width: var(--maxw); margin: 0 auto; padding: 0 32px;
+    height: 100%; display: flex; flex-direction: column; justify-content: center; gap: 10px;
+  }
+  .gantt-top {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .gantt-brand {
+    font-family: var(--display); font-weight: 800; font-size: 18px;
+    color: var(--white); letter-spacing: -0.03em;
+  }
+  .gantt-brand span { color: var(--green); }
+  .gantt-meta {
+    font-family: var(--mono); font-size: 11px; color: var(--ink-soft);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--green);
+    box-shadow: 0 0 10px var(--green); display: inline-block;
+  }
+
+  .gantt-track {
+    display: flex; gap: 8px; width: 100%;
+  }
+  .gantt-seg {
+    flex: 1; display: flex; flex-direction: column; gap: 6px;
+    background: none; border: none; padding: 0; cursor: pointer; text-align: left; font-family: var(--mono);
+  }
+  .gantt-bar {
+    height: 4px; width: 100%; border-radius: 2px;
+    background: var(--line);
+    position: relative; overflow: hidden;
+  }
+  .gantt-bar::after {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 0%; background: var(--ink-faint);
+    transition: width 0.4s ease, background 0.3s ease;
+  }
+  .gantt-seg.is-done .gantt-bar::after { width: 100%; background: var(--green); }
+  .gantt-seg.is-active .gantt-bar::after { width: 70%; background: var(--blue); }
+  .gantt-seg.is-active .gantt-bar { background: var(--blue-soft); }
+
+  .gantt-label {
+    font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-faint);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.2s;
+  }
+  .gantt-seg.is-active .gantt-label,
+  .gantt-seg.is-done .gantt-label { color: var(--white); font-weight: 600; }
+
+  @media (max-width: 640px) {
+    .gantt-label { display: none; }
+    .gantt-bar { height: 4px; }
+    :root { --nav-h: 64px; }
+  }
+
+  /* ============ SECTION SHELL ============ */
+  section { padding: 100px 0; border-bottom: 1px solid var(--line); position: relative; }
+  @media (max-width: 640px) { section { padding: 64px 0; } }
+
+  .phase-tag {
+    font-family: var(--mono); font-size: 12px; color: var(--ink-soft);
+    display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .phase-tag .num { color: var(--green); font-weight: 600; }
+  .phase-tag::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+
+  .section-head { max-width: 640px; margin-bottom: 56px; }
+  .section-head h2 { font-size: 40px; margin-bottom: 16px; font-weight: 700; }
+  .section-head p { color: var(--ink-soft); font-size: 18px; margin: 0; }
+
+  /* ============ HERO ============ */
+  .hero { padding-top: 100px; padding-bottom: 120px; }
+  .hero-grid {
+    display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 64px; align-items: center;
+  }
+  @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; gap: 48px; } }
+
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.05em;
+    background: var(--green-soft); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.2);
+    padding: 8px 16px; border-radius: 30px; margin-bottom: 32px;
+  }
+
+  .hero h1 {
+    font-size: 64px; line-height: 1.05; margin-bottom: 12px; font-weight: 800;
+    background: linear-gradient(180deg, #FFFFFF 0%, #9CA3AF 100%);
+    background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero .role {
+    font-family: var(--mono); font-size: 16px; color: var(--blue); margin-bottom: 24px; font-weight: 500;
+  }
+  .hero .tagline {
+    font-size: 20px; color: var(--ink-soft); max-width: 520px; margin-bottom: 40px; line-height: 1.5;
+  }
+  .hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 56px; }
+
+  .hero-stats { display: flex; gap: 0; border-top: 1px solid var(--line); max-width: 520px; }
+  .hero-stats .stat { flex: 1; padding: 24px 24px 0 0; }
+  .hero-stats .stat + .stat { border-left: 1px solid var(--line); padding-left: 24px; }
+  .hero-stats .stat .n { font-family: var(--display); font-size: 32px; font-weight: 800; color: var(--white); display: block; }
+  .hero-stats .stat .l { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* Roadmap Card */
+  .roadmap-card {
+    background: var(--paper-card); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 32px; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    position: relative; overflow: hidden;
+  }
+  .roadmap-card::before {
+    content: ''; position: absolute; top: 0; right: 0; width: 150px; height: 150px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+  }
+  .roadmap-card .rc-head {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-faint); margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid var(--line);
+  }
+  .rc-item { display: flex; gap: 16px; margin-bottom: 24px; }
+  .rc-item:last-child { margin-bottom: 0; }
+  .rc-marker {
+    width: 14px; height: 14px; border-radius: 50%; margin-top: 4px; flex-shrink: 0;
+    border: 2px solid var(--ink-faint); background: var(--paper-card);
+  }
+  .rc-item.done .rc-marker { background: var(--green); border-color: var(--green); box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
+  .rc-item.current .rc-marker { background: var(--blue); border-color: var(--blue); box-shadow: 0 0 12px var(--blue); }
+  .rc-item .rc-title { font-family: var(--display); font-weight: 600; font-size: 16px; color: var(--white); margin-bottom: 2px; }
+  .rc-item .rc-sub { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); }
+  .rc-item.current .rc-sub { color: var(--blue); }
+
+  /* ============ ABOUT ============ */
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }
+  @media (max-width: 900px) { .about-grid { grid-template-columns: 1fr; gap: 40px; } }
+  .about-bio h2 { font-size: 36px; margin-bottom: 20px; }
+  .about-bio p { font-size: 18px; color: var(--ink-soft); margin-bottom: 0; line-height: 1.7; }
+
+  .competency-list { list-style: none; margin: 0; padding: 0; }
+  .competency-list li {
+    display: flex; align-items: center; gap: 20px;
+    padding: 18px 0; border-bottom: 1px solid var(--line);
+    font-family: var(--display); font-weight: 600; font-size: 18px; color: var(--white);
+  }
+  .competency-list li:first-child { padding-top: 0; }
+  .competency-list .idx { font-family: var(--mono); font-size: 13px; color: var(--green); font-weight: 500; }
+  .competency-list .desc {
+    font-family: var(--body); font-weight: 400; font-size: 14px; color: var(--ink-soft); margin-left: auto; text-align: right; max-width: 240px;
+  }
+  @media (max-width: 640px) { .competency-list .desc { display: none; } }
+
+  /* ============ SKILLS ============ */
+  .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  @media (max-width: 800px) { .skills-grid { grid-template-columns: 1fr; } }
+  .skill-panel {
+    background: var(--paper-card); border: 1px solid var(--line); border-radius: var(--radius); padding: 32px;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .skill-panel:hover { transform: translateY(-4px); border-color: var(--line-strong); }
+  .skill-panel .sp-head { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+  .sp-icon {
+    width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 12px; font-weight: 700; flex-shrink: 0;
+  }
+  .sp-icon.green { background: var(--green-soft); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.2); }
+  .sp-icon.blue { background: var(--blue-soft); color: var(--blue); border: 1px solid rgba(59, 130, 246, 0.2); }
+  .sp-icon.gold { background: var(--gold-soft); color: var(--gold); border: 1px solid rgba(245, 158, 11, 0.2); }
+  .skill-panel h3 { font-size: 18px; }
+  .tag-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .tag {
+    font-family: var(--mono); font-size: 13px; color: var(--ink-soft);
+    background: var(--paper-alt); border: 1px solid var(--line); border-radius: 6px; padding: 8px 14px;
+  }
+
+  /* ============ PROJECTS ============ */
+  .project-card {
+    background: var(--paper-card); border: 1px solid var(--line); border-radius: var(--radius);
+    overflow: hidden; margin-bottom: 32px; transition: border-color 0.3s ease;
+  }
+  .project-card:hover { border-color: var(--line-strong); }
+  .project-card:last-child { margin-bottom: 0; }
+  .pc-head {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 24px;
+    padding: 32px; border-bottom: 1px solid var(--line);
+  }
+  @media (max-width: 640px) { .pc-head { flex-direction: column; gap: 16px; padding: 24px; } }
+  .pc-id { font-family: var(--mono); font-size: 12px; color: var(--green); margin-bottom: 8px; display: block; font-weight: 500; }
+  .pc-head h3 { font-size: 26px; }
+  .pc-status {
+    font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;
+    padding: 6px 14px; border-radius: 20px; white-space: nowrap; flex-shrink: 0;
+    background: var(--green-soft); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.2);
+  }
+  .pc-meta-row {
+    display: flex; flex-wrap: wrap; gap: 16px; padding: 20px 32px; border-bottom: 1px solid var(--line);
+    background: var(--paper-alt);
+  }
+  @media (max-width: 640px) { .pc-meta-row { padding: 16px 24px; } }
+  .meta-chip {
+    font-family: var(--mono); font-size: 13px; display: flex; align-items: center; gap: 8px; color: var(--ink-soft);
+  }
+  .meta-chip b { color: var(--white); font-weight: 500; }
+  .meta-chip .swatch { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .swatch.hybrid { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+  .swatch.agile { background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .swatch.waterfall { background: var(--blue); box-shadow: 0 0 8px var(--blue); }
+
+  .pc-body { padding: 32px; display: grid; grid-template-columns: 1fr 1.2fr; gap: 32px; }
+  @media (max-width: 640px) { .pc-body { grid-template-columns: 1fr; padding: 24px; gap: 24px; } }
+  .pc-field .fl {
+    font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-faint); margin-bottom: 8px;
+  }
+  .pc-field p { margin: 0; font-size: 16px; color: var(--ink-soft); line-height: 1.6; }
+  .pc-field.result p { color: var(--white); font-weight: 500; }
+
+  /* ============ CONTACT ============ */
+  .contact-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 64px; }
+  @media (max-width: 900px) { .contact-grid { grid-template-columns: 1fr; gap: 40px; } }
+  .contact-intro h2 { font-size: 40px; margin-bottom: 16px; }
+  .contact-intro p { color: var(--ink-soft); font-size: 18px; margin-bottom: 40px; max-width: 440px; }
+
+  .social-list { list-style: none; margin: 0; padding: 0; }
+  .social-list li { border-top: 1px solid var(--line); }
+  .social-list li:last-child { border-bottom: 1px solid var(--line); }
+  .social-list a {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 0; text-decoration: none; font-family: var(--display); font-weight: 600; font-size: 18px;
+    color: var(--white); transition: color 0.2s ease, padding-left 0.2s ease;
+  }
+  .social-list a:hover { color: var(--green); padding-left: 8px; }
+  .social-list .arrow { font-family: var(--mono); font-size: 16px; color: var(--ink-faint); }
+
+  .contact-form {
+    background: var(--paper-card); border: 1px solid var(--line); border-radius: var(--radius); padding: 40px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  @media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
+  .field label {
+    display: block; font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-soft); margin-bottom: 8px;
+  }
+  .field input, .field textarea {
+    width: 100%; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--paper);
+    padding: 14px 16px; font-family: var(--body); font-size: 15px; color: var(--white);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field input:focus, .field textarea:focus {
+    outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-soft);
+  }
+  .field { margin-bottom: 20px; }
+  .field textarea { resize: vertical; min-height: 120px; }
+  .form-note { font-family: var(--mono); font-size: 12px; color: var(--ink-faint); margin-top: 16px; text-align: center; }
+
+  /* ============ FOOTER ============ */
+  footer { padding: 40px 0; background: var(--paper); }
+  .footer-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+  .footer-row p { font-family: var(--mono); font-size: 13px; color: var(--ink-faint); margin: 0; }
+</style>
+</head>
+<body>
+
+<!-- ============ SIGNATURE NAV: PROJECT TIMELINE / GANTT BAR ============ -->
+<nav class="gantt-nav" aria-label="Page sections shown as a project timeline">
+  <div class="gantt-inner">
+    <div class="gantt-top">
+      <a href="#home" class="gantt-brand">Student<span> Management</span></a>
+      <div class="gantt-meta"><span class="dot" aria-hidden="true"></span> STATUS: OPEN TO OPPORTUNITIES</div>
+    </div>
+    <div class="gantt-track" id="ganttTrack">
+      <button class="gantt-seg" data-target="home"><span class="gantt-bar"></span><span class="gantt-label">01 Overview</span></button>
+      <button class="gantt-seg" data-target="about"><span class="gantt-bar"></span><span class="gantt-label">02 Profile</span></button>
+      <button class="gantt-seg" data-target="skills"><span class="gantt-bar"></span><span class="gantt-label">03 Capabilities</span></button>
+      <button class="gantt-seg" data-target="projects"><span class="gantt-bar"></span><span class="gantt-label">04 Projects</span></button>
+      <button class="gantt-seg" data-target="contact"><span class="gantt-bar"></span><span class="gantt-label">05 Contact</span></button>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="home" data-phase="home">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="status-badge"><span class="dot"></span> Available for PM internships &amp; entry-level roles</div>
+      <h1>Student Management</h1>
+      <div class="role">Aspiring Project Manager · PM Student</div>
+      <p class="tagline">Bridging the gap between technical execution and structured project management.</p>
+      <div class="hero-ctas">
+        <a href="#projects" class="btn btn-primary">View Projects</a>
+        <a href="#contact" class="btn btn-ghost">Contact Me</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span class="n">3</span><span class="l">Projects Delivered</span></div>
+        <div class="stat"><span class="n">2</span><span class="l">Methodologies Applied</span></div>
+        <div class="stat"><span class="n">4</span><span class="l">Team Members Led</span></div>
+      </div>
+    </div>
+
+    <div class="roadmap-card" aria-label="Career roadmap">
+      <div class="rc-head"><span>Career Roadmap</span><span>2026</span></div>
+      <div class="rc-item done">
+        <span class="rc-marker"></span>
+        <div><div class="rc-title">Project Management Coursework</div><div class="rc-sub">Completed — Agile, Waterfall, Risk &amp; Scope</div></div>
+      </div>
+      <div class="rc-item current">
+        <span class="rc-marker"></span>
+        <div><div class="rc-title">PM Internship Search</div><div class="rc-sub">In progress — reviewing offers</div></div>
+      </div>
+      <div class="rc-item">
+        <span class="rc-marker"></span>
+        <div><div class="rc-title">First Project Manager Role</div><div class="rc-sub">Planned — ready to onboard</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section id="about" data-phase="about">
+  <div class="wrap">
+    <div class="phase-tag"><span class="num">02</span> Profile</div>
+    <div class="about-grid">
+      <div class="about-bio">
+        <h2>About Me</h2>
+        <p>Project Management student with a strong background in software logic, embedded systems simulation, and network planning. Skilled in organizing workflows, managing project constraints, and leading cross-functional academic teams using Agile and Waterfall methodologies.</p>
+      </div>
+      <div>
+        <ul class="competency-list">
+          <li><span class="idx">01</span> Leadership <span class="desc">Directing team focus toward shared deadlines</span></li>
+          <li><span class="idx">02</span> Risk Assessment <span class="desc">Identifying constraints before they become blockers</span></li>
+          <li><span class="idx">03</span> Communication <span class="desc">Keeping stakeholders aligned at every stage</span></li>
+          <li><span class="idx">04</span> Problem-Solving <span class="desc">Finding the practical path through ambiguity</span></li>
+          <li><span class="idx">05</span> Team Coordination <span class="desc">Matching tasks to strengths, sprint over sprint</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SKILLS & TOOLS ============ -->
+<section id="skills" data-phase="skills">
+  <div class="wrap">
+    <div class="phase-tag"><span class="num">03</span> Capabilities</div>
+    <div class="section-head">
+      <h2>Skills &amp; Tools</h2>
+      <p>The frameworks I plan with, the software I run projects on, and the technical base I use to speak the same language as the teams I manage.</p>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-panel">
+        <div class="sp-head"><span class="sp-icon green">PM</span><h3>PM Frameworks</h3></div>
+        <div class="tag-list">
+          <span class="tag">Agile</span><span class="tag">Scrum</span><span class="tag">Waterfall</span>
+          <span class="tag">Kanban</span><span class="tag">Scope Management</span><span class="tag">Risk Management</span>
+        </div>
+      </div>
+      <div class="skill-panel">
+        <div class="sp-head"><span class="sp-icon blue">TL</span><h3>Project Tools</h3></div>
+        <div class="tag-list">
+          <span class="tag">Trello</span><span class="tag">Jira</span><span class="tag">Notion</span>
+          <span class="tag">MS Project</span><span class="tag">Gantt Charts</span>
+        </div>
+      </div>
+      <div class="skill-panel">
+        <div class="sp-head"><span class="sp-icon gold">TC</span><h3>Technical Tools</h3></div>
+        <div class="tag-list">
+          <span class="tag">C / C++</span><span class="tag">Python</span><span class="tag">Proteus</span>
+          <span class="tag">Cisco Packet Tracer</span><span class="tag">Git</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURED PROJECTS ============ -->
+<section id="projects" data-phase="projects">
+  <div class="wrap">
+    <div class="phase-tag"><span class="num">04</span> Projects</div>
+    <div class="section-head">
+      <h2>Featured Projects</h2>
+      <p>Three delivered projects spanning hardware, software, and infrastructure — each run under a different methodology to fit the problem.</p>
+    </div>
+
+    <!-- Project 1 -->
+    <article class="project-card">
+      <div class="pc-head">
+        <div>
+          <span class="pc-id">PRJ-01 · Automated Irrigation</span>
+          <h3>SmartAgri — Automated Sensor-Based Irrigation</h3>
+        </div>
+        <span class="pc-status">Delivered</span>
+      </div>
+      <div class="pc-meta-row">
+        <span class="meta-chip"><span class="swatch hybrid"></span><b>Role:</b>&nbsp;Student Project Manager &amp; System Lead</span>
+        <span class="meta-chip"><b>Methodology:</b>&nbsp;Hybrid (Waterfall + Agile)</span>
+        <span class="meta-chip"><b>Tools:</b>&nbsp;Proteus, C/C++, Trello, Gantt Charts</span>
+      </div>
+      <div class="pc-body">
+        <div class="pc-field">
+          <div class="fl">Problem</div>
+          <p>Manual crop watering leads to water waste and inconsistent soil moisture levels.</p>
+        </div>
+        <div class="pc-field result">
+          <div class="fl">Key Result</div>
+          <p>Led the planning and build of a simulated circuit in Proteus paired with C-based microcontroller logic to automatically trigger irrigation pumps based on soil humidity thresholds — reducing simulated water usage by 30%.</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Project 2 -->
+    <article class="project-card">
+      <div class="pc-head">
+        <div>
+          <span class="pc-id">PRJ-02 · Student Project Hub</span>
+          <h3>CampusTask — Centralized Student Project Hub</h3>
+        </div>
+        <span class="pc-status">Delivered</span>
+      </div>
+      <div class="pc-meta-row">
+        <span class="meta-chip"><span class="swatch agile"></span><b>Role:</b>&nbsp;Project Manager &amp; Scrum Master</span>
+        <span class="meta-chip"><b>Methodology:</b>&nbsp;Agile / Scrum — 2-week sprints</span>
+        <span class="meta-chip"><b>Tools:</b>&nbsp;Jira, Figma, Python, Notion</span>
+      </div>
+      <div class="pc-body">
+        <div class="pc-field">
+          <div class="fl">Problem</div>
+          <p>Student project teams frequently suffer from miscommunication, missed deadlines, and poor task visibility.</p>
+        </div>
+        <div class="pc-field result">
+          <div class="fl">Key Result</div>
+          <p>Managed a 4-person student team to design and deploy a CLI/GUI-based Python application for task tracking, delivering the MVP on time across 3 sprint cycles with full backlog grooming.</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Project 3 -->
+    <article class="project-card">
+      <div class="pc-head">
+        <div>
+          <span class="pc-id">PRJ-03 · Network Overhaul</span>
+          <h3>NetOptima — Campus Lab Subnetting &amp; Topology Overhaul</h3>
+        </div>
+        <span class="pc-status">Delivered</span>
+      </div>
+      <div class="pc-meta-row">
+        <span class="meta-chip"><span class="swatch waterfall"></span><b>Role:</b>&nbsp;Lead Technical Project Planner</span>
+        <span class="meta-chip"><b>Methodology:</b>&nbsp;Waterfall / Predictive Planning</span>
+        <span class="meta-chip"><b>Tools:</b>&nbsp;Cisco Packet Tracer, MS Excel, MS Project</span>
+      </div>
+      <div class="pc-body">
+        <div class="pc-field">
+          <div class="fl">Problem</div>
+          <p>An outdated computer lab network experienced IP address conflicts and high traffic bottlenecks.</p>
+        </div>
+        <div class="pc-field result">
+          <div class="fl">Key Result</div>
+          <p>Developed a complete network redesign plan incorporating VLSM IP subnetting, defined work breakdown structures (WBS), and drafted a realistic cost-estimation matrix for hardware upgrades.</p>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section id="contact" data-phase="contact">
+  <div class="wrap contact-grid">
+    <div>
+      <div class="phase-tag"><span class="num">05</span> Contact</div>
+      <div class="contact-intro">
+        <h2>Let's Connect</h2>
+        <p>Have a role, internship, or project in mind? I'd like to hear about it — reach out directly or send a message below.</p>
+      </div>
+      <ul class="social-list">
+        <li><a href="https://web.facebook.com/choeng.lyhorng" target="_blank" rel="noopener">Facebook <span class="arrow">↗</span></a></li>
+        <li><a href="https://github.com/choenglyhorng-ctrl" target="_blank" rel="noopener">GitHub <span class="arrow">↗</span></a></li>
+        <li><a href="mailto:choenglyhorng@gmail.com">Email <span class="arrow">↗</span></a></li>
+      </ul>
+    </div>
+
+    <form class="contact-form" id="contactForm">
+      <div class="form-row">
+        <div class="field">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required autocomplete="email">
+        </div>
+      </div>
+      <div class="field">
+        <label for="subject">Subject</label>
+        <input type="text" id="subject" name="subject" required>
+      </div>
+      <div class="field">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Send Message</button>
+      <p class="form-note">Opens your email client with this message pre-filled. Replace with a form handler once connected to a backend.</p>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-row">
+    <p>© 2026 Your Name — Built &amp; maintained like a well-run project.</p>
+    <p>Last updated: Aug 2026</p>
+  </div>
+</footer>
+
+
+  
+</script>
+</body>
+</html>

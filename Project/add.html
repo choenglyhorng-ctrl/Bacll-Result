@@ -1,0 +1,140 @@
+
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create New Course</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #21282b, #495d63, #368d96);
+            min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        .create-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+            padding: 2.5rem;
+            border: none;
+        }
+        .form-label {
+            font-size: 0.8rem;
+            letter-spacing: 0.6px;
+            color: #4a5568;
+        }
+        .form-control, .input-group-text {
+            border-color: #e2e8f0;
+            padding: 0.65rem 0.9rem;
+            border-radius: 8px;
+            background-color: #f8fafc;
+        }
+        .form-control:focus {
+            background-color: #ffffff;
+            border-color: #198754;
+            box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.15);
+        }
+        .input-group .form-control {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+        .btn-create {
+            background: linear-gradient(135deg, #1fa84c, #146c43);
+            border: none;
+            transition: all 0.2s ease;
+            border-radius: 8px;
+        }
+        .btn-create:hover {
+            background: linear-gradient(135deg, #146c43, #0f5132);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3);
+        }
+        .btn-cancel {
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .btn-cancel:hover {
+            background-color: #f1f5f9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-7">
+                <div class="card create-card">
+                    
+                    <div class="mb-4 pb-3 border-bottom">
+                        <h2 class="fw-bold text-dark m-0 d-flex align-items-center gap-2">
+                            <i class="bi bi-plus-circle-fill text-success"></i> Create New Course
+                        </h2>
+                        <p class="text-muted small m-0 mt-1">Fill in the fields below to publish a brand new course to the curriculum dashboard.</p>
+                    </div>
+                    
+                    <form method="post" action="/create">
+                        
+                        <div class="mb-3">
+                            <label for="title" class="form-label fw-bold text-uppercase">
+                                <i class="bi bi-type text-success me-1"></i> Course Title
+                            </label>
+                            <input type="text" name="title" id="title" class="form-control fw-semibold" placeholder="e.g., Full-Stack Web Development" required />
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label fw-bold text-uppercase">
+                                <i class="bi bi-justify-left text-success me-1"></i> Description
+                            </label>
+                            <textarea name="description" id="description" class="form-control" rows="4" placeholder="Enter a brief summary of the course topics..." required></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="price" class="form-label fw-bold text-uppercase">
+                                    <i class="bi bi-currency-dollar text-success me-1"></i> Price
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted fw-bold">$</span>
+                                    <input type="number" step="0.01" name="price" id="price" class="form-control fw-bold text-success" placeholder="0.00" required />
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="professor" class="form-label fw-bold text-uppercase">
+                                    <i class="bi bi-person-badge text-success me-1"></i> Professor
+                                </label>
+                                <input type="text" name="professor" id="professor" class="form-control" placeholder="e.g., Dr. Jane Doe" required />
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="video_url" class="form-label fw-bold text-uppercase">
+                                <i class="bi bi-link-45deg text-success me-1"></i> Video URL
+                            </label>
+                            <input type="url" name="video_url" id="video_url" class="form-control" placeholder="https://example.com/intro-video" />
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 border-top pt-3 mt-4">
+                            <a href="/course" class="btn btn-outline-secondary btn-cancel px-4 py-2 fw-semibold">Cancel</a>
+                            <button type="submit" class="btn btn-success btn-create px-4 py-2 fw-semibold shadow-sm">
+                                <i class="bi bi-plus-lg me-1"></i> Create Course
+                            </button>
+                        </div>
+                    </form>                   
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+</body>
+
+</html>
